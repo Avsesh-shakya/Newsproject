@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Navbar from './components/Navbar'
+import News from './components/News'
 
 export class App extends Component {
 
@@ -7,6 +8,7 @@ export class App extends Component {
     return (
       <div className='conatiner'>
         <Navbar/>
+        <News/>
      
           
           
