@@ -13,7 +13,7 @@ export class NewsItem extends Component {
                     
 
                         <p className="text-center">{author}</p>
-                    <img src={imageUrl} className="card-img-top" alt="..." />
+                    <img src={!imageUrl ?'https://static.vecteezy.com/system/resources/thumbnails/006/299/370/original/world-breaking-news-digital-earth-hud-rotating-globe-rotating-free-video.jpg':imageUrl} className="card-img-top" alt="..." />
                     <div className="card-body">
                         <h5 className="card-title">{title}</h5>
                         <p className="card-text">{description}</p>

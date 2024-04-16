@@ -128,11 +128,17 @@ export class News extends Component {
         console.log('Hello i am constructor')
         this.state={
             articles:this.articles,
-            loading:false
-            
-        }
-        
-        
+            loading:false   
+        }   
+    }
+    async componentDidMount(){
+        let url ="https://newsapi.org/v2/top-headlines?country=in&apiKey=d08b035914594930b5c32e2fe169efb5"
+        let data = await fetch(url);
+        let parsedate = await data.json()
+        this.setState({articles:parsedate.articles})
+
+        console.log(parsedate)
+
     }
 
     render() {
@@ -143,7 +149,7 @@ export class News extends Component {
 
                 {this.state.articles.map((element)=>{  
                    return <div className="col-md-4" key={element.url}>
-                        <NewsItem title={element.title.slice(0,50)} description={element.description.slice(0,150)}imageUrl={element.urlToImage} newsUrl={element.url} author={element.author}/>
+                        <NewsItem title={element.title} description={element.description}imageUrl={element.urlToImage} newsUrl={element.url} author={element.author}/>
                     </div>
                   
                 })}
