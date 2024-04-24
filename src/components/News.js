@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import NewsItem from './NewsItem'
+import Spinner from './Spinner'
+
 
 export class News extends Component {
-    articles= [     
+    articles = [
         {
             "source": {
                 "id": "cbc-news",
@@ -120,44 +122,84 @@ export class News extends Component {
             "publishedAt": "2024-04-13T14:22:28.4564108Z",
             "content": "Iran's Revolutionary Guards seized an Israeli-linked cargo ship in the Strait of Hormuz on Saturday, days after Tehran said it could close the crucial shipping route and warned it would retaliate for… [+3302 chars]"
         },
-      
+
     ]
 
     constructor() {
         super();
         console.log('Hello i am constructor')
-        this.state={
-            articles:this.articles,
-            loading:false   
-        }   
+        this.state = {
+            articles: this.articles,
+            loading: true,
+            page: 1
+        }
     }
-    async componentDidMount(){
-        let url ="https://newsapi.org/v2/top-headlines?country=in&apiKey=d08b035914594930b5c32e2fe169efb5"
+    async componentDidMount() {
+        let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=d08b035914594930b5c32e2fe169efb5&page=1&pageSize=${this.props.pageSize}`
+        this.setState({loading:true});
         let data = await fetch(url);
-        let parsedate = await data.json()
-        this.setState({articles:parsedate.articles})
+        let parseDate = await data.json()
+        this.setState({ articles: parseDate.articles, 
+            totalResults: parseDate.totalResults,
+            loading:false
+         })
 
-        console.log(parsedate)
+        // console.log(parsedate)
 
+    }
+    clickPrePage = async () => {
+
+        let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=d08b035914594930b5c32e2fe169efb5&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`;
+        this.setState({loading:true});
+        let data = await fetch(url);
+        let parseDate = await data.json()
+        this.setState({
+            page: this.state.page - 1,
+            articles: parseDate.articles,
+            loading:false
+
+
+        })
+    }
+    clickNexPage = async () => {
+        if (!(this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize))) {
+            let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=d08b035914594930b5c32e2fe169efb5&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
+            this.setState({loading:true});
+            let data = await fetch(url);
+            let parseDate = await data.json()
+            this.setState({
+                page: this.state.page + 1,
+                articles: parseDate.articles,
+                loading:false
+            })
+        }
     }
 
     render() {
         return (
+
             <div className='container my-5'>
-                <h2>NewsApp -Top Headlines</h2>
+                <h2 className='text-center'>NewsApp -Top Headlines</h2>
+                {this.state.loading && <Spinner />}
                 <div className="row my-4">
 
-                {this.state.articles.map((element)=>{  
-                   return <div className="col-md-4" key={element.url}>
-                        <NewsItem title={element.title} description={element.description}imageUrl={element.urlToImage} newsUrl={element.url} author={element.author}/>
-                    </div>
-                  
-                })}
+                    {!this.state.loading && this.state.articles.map((element) => {
+                        return <div className="col-md-4" key={element.url}>
+                            <NewsItem title={element.title} description={element.description
+                            } imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} />
+                        </div>
+
+                    })}
+
 
                 </div>
-            
-            
 
+
+                <div className="container d-flex justify-content-between">
+                    <button type="button" disabled={this.state.page <= 1} onClick={this.clickPrePage} className="btn btn-dark ">&larr; Previous </button>
+                    <button type="button" disabled={this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)} onClick={this.clickNexPage} className="btn btn-dark ">Next &rarr;</button>
+
+                </div>
             </div>
         )
     }
