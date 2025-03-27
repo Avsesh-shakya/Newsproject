@@ -9,7 +9,7 @@ export class NewsItem extends Component {
                 
 
                 {/* create to card */}
-                <div className="card" style={{width: "18rem"}}>
+                <div className="card" >
                     
 
                         <p className="text-center">{author}</p>
